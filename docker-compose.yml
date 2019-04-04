@@ -15,7 +15,7 @@ services:
       - ./magento2:/var/www/html
       - ./varnish.secret:/varnish.secret
       # Enable the next line if you want to add a custom php.ini
-      #- ./php.ini:/usr/local/etc/php/conf.d/999-customphp.ini
+      - ./php.ini:/usr/local/etc/php/conf.d/999-customphp.ini
 
   ssl:
     image: fballiano/nginx-ssl-for-magento2
@@ -23,6 +23,10 @@ services:
       - varnish
     links:
       - varnish
+    volumes:
+      - ./fake-certificates/default-fake.crt:/etc/nginx/ssl/default-fake.crt
+      - ./fake-certificates/default-fake.key:/etc/nginx/ssl/default-fake.key
+      - ./nginx-default.conf:/etc/nginx/conf.d/fballiano-magento2.conf
     ports:
       - "443:443"
 
@@ -55,7 +59,17 @@ services:
       - ./magento2:/var/www/html
       - ~/.composer/auth.json:/root/.composer/auth.json
       # Enable the next line if you want to add a custom php.ini
-      #- ./php.ini:/usr/local/etc/php/conf.d/999-customphp.ini
+      - ./php.ini:/usr/local/etc/php/conf.d/999-customphp.ini
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    links:
+      - db
+    ports:
+      - "8081:8081"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
 
   db:
     image: mariadb
@@ -68,6 +82,12 @@ services:
       - MYSQL_DATABASE=magento2
       - MYSQL_USER=magento2
       - MYSQL_PASSWORD=magento2
+
+  elasticsearch:
+    image: elasticsearch:5.6
+    ports:
+      - "9200:9200"
+      - "9300:9300"
 
   cache:
     image: fballiano/redis-volatile
