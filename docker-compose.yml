@@ -8,6 +8,7 @@ services:
     links:
       - db
       - cache
+      - sessions
       - clusterdata
       - apache
       - varnish
@@ -23,10 +24,6 @@ services:
       - varnish
     links:
       - varnish
-    volumes:
-      - ./fake-certificates/default-fake.crt:/etc/nginx/ssl/default-fake.crt
-      - ./fake-certificates/default-fake.key:/etc/nginx/ssl/default-fake.key
-      - ./nginx-default.conf:/etc/nginx/conf.d/fballiano-magento2.conf
     ports:
       - "443:443"
 
@@ -54,6 +51,7 @@ services:
     links:
       - db
       - cache
+      - sessions
       - clusterdata
     volumes:
       - ./magento2:/var/www/html
@@ -84,16 +82,28 @@ services:
       - MYSQL_PASSWORD=magento2
 
   elasticsearch:
-    image: elasticsearch:5.6
+    image: elasticsearch:6.8.3
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     ports:
       - "9200:9200"
-      - "9300:9300"
+    volumes:
+      - ./elasticsearchdata:/usr/share/elasticsearch/data
 
   cache:
     image: fballiano/redis-volatile
 
   clusterdata:
     image: fballiano/redis-volatile
+
+  sessions:
+    image: redis
 
 volumes:
   dbdata:
