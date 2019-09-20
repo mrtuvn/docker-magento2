@@ -11,6 +11,7 @@ services:
       - sessions
       - clusterdata
       - elasticsearch
+      - phpmyadmin
       - apache
       - varnish
     volumes:
@@ -68,10 +69,10 @@ services:
     links:
       - db
     ports:
-      - "8081:8081"
+      - "8081:80"
     environment:
-      PMA_HOST: db
-      PMA_PORT: 3306
+      - PMA_HOST=db
+      - MYSQL_ROOT_PASSWORD=magento2
 
   db:
     image: mariadb
