@@ -9,6 +9,7 @@
 * Container 6: Varnish 5
 * Container 7: Redis (volatile, cluster nodes autodiscovery)
 * Container 8: Nginx SSL terminator
+* Container 9: Elasticsearch
 
 ### Why a separate cron container?
 First of all containers should be (as far as possible) single process, but the most important thing is that (if someday we'll be able to deploy this infrastructure in production) we may need a cluster of apache+php containers but a single cron container running.
