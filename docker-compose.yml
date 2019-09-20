@@ -10,6 +10,7 @@ services:
       - cache
       - sessions
       - clusterdata
+      - elasticsearch
       - apache
       - varnish
     volumes:
@@ -24,6 +25,7 @@ services:
       - varnish
     links:
       - varnish
+      - elasticsearch
     ports:
       - "443:443"
 
@@ -54,6 +56,7 @@ services:
       - cache
       - sessions
       - clusterdata
+      - elasticsearch
     volumes:
       - ./magento2:/var/www/html
       - ~/.composer/auth.json:/root/.composer/auth.json
@@ -85,6 +88,7 @@ services:
   elasticsearch:
     image: elasticsearch:6.8.3
     environment:
+      - discovery.type=single-node
       - cluster.name=docker-cluster
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
@@ -94,6 +98,7 @@ services:
         hard: -1
     ports:
       - "9200:9200"
+      - "9300:9300"
     volumes:
       - ./elasticsearchdata:/usr/share/elasticsearch/data
 
