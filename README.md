@@ -44,6 +44,9 @@ For database configuration use hostname db (or the name assigned to the DB conta
 docker exec -it dockermagento2_apache_1 bash
 php bin/magento dev:source-theme:deploy
 php bin/magento setup:static-content:deploy
+
+For run non-root user
+docker exec -it --user www-data dockermagento2_apache_1 bash
 ```
 
 ## Enable Redis for Magento's cache
