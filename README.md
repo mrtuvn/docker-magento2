@@ -180,6 +180,7 @@ Please note that your php.ini will be the last parsed thus you can ovverride any
 
 ## Tested on:
 * Docker for Mac 19
+* Docker for Linux (Ubuntu18)
 
 ## TODO
 * DB clustering?
